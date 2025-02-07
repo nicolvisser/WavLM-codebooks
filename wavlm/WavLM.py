@@ -414,13 +414,32 @@ class WavLM(nn.Module):
         return feature, res["padding_mask"]
 
     @classmethod
-    def from_pretrained(cls, path: str, map_location: str = "cpu") -> "WavLM":
-        checkpoint = torch.load(path, map_location=map_location, weights_only=True)
-        model = cls(WavLMConfig(checkpoint["cfg"]))
+    def from_pretrained(cls, checkpoint: dict, map_location: str = "cpu") -> "WavLM":
+        model = WavLM(WavLMConfig(checkpoint["cfg"]))
         model.load_state_dict(checkpoint["model"])
         model.to(map_location)
         model.eval()
+        num_params = sum(p.numel() for p in model.parameters())
+        print(f"WavLM Large loaded with {num_params:,} parameters.")
         return model
+
+    @classmethod
+    def from_pretrained_url(
+        cls, url: str, map_location: str = "cpu", progress=True
+    ) -> "WavLM":
+        checkpoint = torch.hub.load_state_dict_from_url(
+            url,
+            map_location=map_location,
+            progress=progress,
+            check_hash=True,
+            weights_only=True,
+        )
+        return cls.from_pretrained(checkpoint, map_location=map_location)
+
+    @classmethod
+    def from_pretrained_path(cls, path: str, map_location: str = "cpu") -> "WavLM":
+        checkpoint = torch.load(path, map_location=map_location, weights_only=True)
+        return cls.from_pretrained(checkpoint, map_location=map_location)
 
 
 class ConvFeatureExtractionModel(nn.Module):

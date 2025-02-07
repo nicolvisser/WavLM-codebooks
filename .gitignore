@@ -1,5 +1,7 @@
 __pycache__
-.venv
-checkpoints
-output
+.venv/
+checkpoints/
+output/
 *.whl
+poetry.lock
+dist/

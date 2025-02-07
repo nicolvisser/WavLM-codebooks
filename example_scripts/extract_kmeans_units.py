@@ -38,7 +38,7 @@ class WaveformWithOutputPathDataset(Dataset):
 if __name__ == "__main__":
 
     wavlm = torch.hub.load(
-        "nicolvisser/wavlm-codebooks",
+        "nicolvisser/WavLM-codebooks",
         "wavlm_large",
         map_location="cuda",
         progress=True,
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     wavlm.eval()
 
     codebook = torch.hub.load(
-        "nicolvisser/wavlm-codebooks",
+        "nicolvisser/WavLM-codebooks",
         "codebook",
         layer=11,
         k=500,

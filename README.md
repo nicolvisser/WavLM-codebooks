@@ -1,10 +1,12 @@
-# K-means Codebooks for WavLM
+# $k$-means codebooks for WavLM
 
-A quick way to access the pretrained [WavLM Large](https://github.com/microsoft/unilm/tree/master/wavlm) model and a few pretrained $K$-means codebooks on some of the layers.
+A quick way to access the pretrained [WavLM Large](https://github.com/microsoft/unilm/tree/master/wavlm) model and a few pretrained $k$-means codebooks on some of the layers.
 
 ## Requirements
 
-See `pyproject.toml`.
+Python 3.10+ and PyTorch 2+ are required.
+
+For training, see the `dev` requirements in `pyproject.toml`.
 
 ## Usage
 
@@ -18,7 +20,7 @@ wav, sr = torchaudio.load(
 assert sr == 16000
 
 wavlm = torch.hub.load(
-    "nicolvisser/wavlm-codebooks",
+    "nicolvisser/WavLM-codebooks",
     "wavlm_large",
     progress=True,
     trust_repo=True,
@@ -26,10 +28,10 @@ wavlm = torch.hub.load(
 wavlm.eval()
 
 codebook = torch.hub.load(
-    "nicolvisser/wavlm-codebooks",
+    "nicolvisser/WavLM-codebooks",
     "codebook",
     layer=11,
-    k=500,
+    k=500, # <- change k here
     progress=True,
     trust_repo=True,
 ).cuda()
@@ -45,12 +47,22 @@ with torch.inference_mode():
     )  # [1, T, D]
     features = features.squeeze(0)  # [T, D]
 
-    distances = torch.cdist(features.cuda(), codebook, p=2)  # [T, K]
+    distances = torch.cdist(features, codebook, p=2)  # [T, K]
     units = torch.argmin(distances, dim=1)  # [T,]
 
 print(units)
 
 ```
+
+## Pretrained codebooks available
+
+| Layer | k    | Bit rate (bps) |
+| ----- | ---- | -------------- |
+| 11    | 100  | 192            |
+| 11    | 200  | 243            |
+| 11    | 500  | 320            |
+| 11    | 1000 | 386            |
+| 11    | 2000 | 414            |
 
 ## More Information
 

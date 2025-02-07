@@ -7,7 +7,7 @@ wav, sr = torchaudio.load(
 assert sr == 16000
 
 wavlm = torch.hub.load(
-    "nicolvisser/wavlm-codebooks",
+    "nicolvisser/WavLM-codebooks",
     "wavlm_large",
     progress=True,
     trust_repo=True,
@@ -15,7 +15,7 @@ wavlm = torch.hub.load(
 wavlm.eval()
 
 codebook = torch.hub.load(
-    "nicolvisser/wavlm-codebooks",
+    "nicolvisser/WavLM-codebooks",
     "codebook",
     layer=11,
     k=500,

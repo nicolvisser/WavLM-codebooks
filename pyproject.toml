@@ -1,21 +1,22 @@
 [tool.poetry]
-name = "wavlm-codebooks"
+name = "wavlm"
 version = "0.1.0"
 description = ""
 authors = ["nicolvisser <nicolvisser@yahoo.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">3.11"
+python = ">3.11,<4.0"
 torch = ">2.0.0"
 torchaudio = ">2.0.0"
 soundfile = "^0.13.1"
-
-[tool.poetry.group.dev.dependencies]
 faiss-cpu = "^1.10.0"
 scikit-learn = "^1.6.1"
 tqdm = "^4.67.1"
-click = "^8.1.8"
+simple-parsing = "^0.1.7"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
 
 [build-system]
 requires = ["poetry-core"]

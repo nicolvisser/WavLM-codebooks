@@ -1,6 +1,6 @@
 from pathlib import Path
+from simple_parsing import ArgumentParser
 
-import click
 import faiss
 import numpy as np
 import torch
@@ -8,55 +8,28 @@ from sklearn.cluster import kmeans_plusplus
 from tqdm import tqdm
 
 
-@click.command()
-@click.option(
-    "--input-dir",
-    "-i",
-    type=click.Path(exists=True, path_type=Path),
-    prompt=True,
-)
-@click.option(
-    "--match-pattern",
-    "-m",
-    type=str,
-    prompt=True,
-    default="**/*.pt",
-)
-@click.option(
-    "--output-dir",
-    "-o",
-    type=click.Path(path_type=Path),
-    prompt=True,
-)
-@click.option(
-    "--n-clusters",
-    "-k",
-    type=int,
-    prompt=True,
-    default=500,
-)
-@click.option(
-    "--keep-percentage",
-    "-p",
-    type=float,
-    prompt=True,
-    default=0.1,
-)
-@click.option(
-    "--n-iter",
-    "-n",
-    type=int,
-    prompt=True,
-    default=300,
-)
-def main(
-    input_dir: Path,
-    match_pattern: str,
-    output_dir: Path,
-    n_clusters: int,
-    keep_percentage: float,
-    n_iter: int,
-):
+def main():
+    # Replace click options with simple_parsing
+    parser = ArgumentParser()
+    
+    # Define the arguments using simple_parsing
+    parser.add_argument("--input-dir", "-i", type=Path, required=True, help="Input directory.")
+    parser.add_argument("--match-pattern", "-m", type=str, default="**/*.pt", help="Match pattern for input files.")
+    parser.add_argument("--output-dir", "-o", type=Path, required=True, help="Output directory.")
+    parser.add_argument("--n-clusters", "-k", type=int, default=500, help="Number of clusters.")
+    parser.add_argument("--keep-percentage", "-p", type=float, default=0.1, help="Percentage of features to keep.")
+    parser.add_argument("--n-iter", "-n", type=int, default=300, help="Number of iterations.")
+    
+    args = parser.parse_args()  # Parse the arguments
+
+    # Use args to access the parameters
+    input_dir = args.input_dir
+    match_pattern = args.match_pattern
+    output_dir = args.output_dir
+    n_clusters = args.n_clusters
+    keep_percentage = args.keep_percentage
+    n_iter = args.n_iter
+
     # define output paths
     output_dir.mkdir(parents=True, exist_ok=True)
     init_centroids_path = output_dir / "init_centroids.npy"

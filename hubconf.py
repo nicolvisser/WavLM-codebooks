@@ -2,9 +2,9 @@ dependencies = ["torch", "torchaudio"]
 
 import torch
 
-from wavlm.WavLM import WavLM, WavLMConfig
+from wavlm.WavLM import WavLM
 
-release_url = "https://github.com/nicolvisser/wavlm-codebooks/releases/download/v0.1.0/"
+release_url = "https://github.com/nicolvisser/WavLM-codebooks/releases/download/v0.1.0/"
 
 codebook_urls = {
     (11, 100): release_url + "codebook-layer-11-k-100-8b2b254e.pt",
@@ -16,18 +16,11 @@ codebook_urls = {
 
 
 def wavlm_large(map_location="cpu", progress=True) -> WavLM:
-    checkpoint = torch.hub.load_state_dict_from_url(
+    return WavLM.from_pretrained_url(
         release_url + "wavlm-large-6fb4b3c3.pt",
         map_location=map_location,
         progress=progress,
-        check_hash=True,
-        weights_only=True,
     )
-    model = WavLM(WavLMConfig(checkpoint["cfg"]))
-    model.load_state_dict(checkpoint["model"])
-    model.to(map_location)
-    model.eval()
-    return model
 
 
 def codebook(layer: int, k: int, map_location="cpu", progress=True) -> torch.Tensor:
@@ -42,4 +35,6 @@ def codebook(layer: int, k: int, map_location="cpu", progress=True) -> torch.Ten
         check_hash=True,
         weights_only=True,
     )
-    return state_dict["codebook"]
+    codebook = state_dict["codebook"]
+    print(f"WavLM codebook loaded with shape: {codebook.shape}")
+    return codebook
