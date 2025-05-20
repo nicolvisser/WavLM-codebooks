@@ -38,9 +38,11 @@ def wavlm_for_dpslm(map_location="cpu", progress=True) -> Tuple[WavLM, Callable]
     def extract_features(
         model: torch.nn.Module, wav: torch.Tensor, sr: int
     ) -> torch.Tensor:
+        device = next(model.parameters()).device
         assert wav.ndim == 2, "wav must be a 2D tensor, with shape (1, T)"
         wav = torchaudio.functional.resample(wav, sr, 16000)
         wav = torch.nn.functional.pad(wav, ((400 - 320) // 2, (400 - 320) // 2))
+        wav = wav.to(device)
         features, _ = model.extract_features(wav, output_layer=11)
         features = features.squeeze(0)
         return features
