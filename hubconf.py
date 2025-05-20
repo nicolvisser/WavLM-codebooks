@@ -18,15 +18,7 @@ codebook_urls = {
 }
 
 
-def wavlm_large(map_location="cpu", progress=True) -> WavLM:
-    return WavLM.from_pretrained_url(
-        release_url + "wavlm-large-6fb4b3c3.pt",
-        map_location=map_location,
-        progress=progress,
-    )
-
-
-def wavlm_for_dpslm(map_location="cpu", progress=True) -> Tuple[WavLM, Callable]:
+def wavlm_large(map_location="cpu", progress=True) -> Tuple[WavLM, Callable]:
     model = WavLM.from_pretrained_url(
         release_url + "wavlm-large-6fb4b3c3.pt",
         map_location=map_location,
@@ -36,14 +28,14 @@ def wavlm_for_dpslm(map_location="cpu", progress=True) -> Tuple[WavLM, Callable]
 
     @torch.inference_mode()
     def extract_features(
-        model: torch.nn.Module, wav: torch.Tensor, sr: int
+        model: torch.nn.Module, wav: torch.Tensor, sr: int, layer=None
     ) -> torch.Tensor:
         device = next(model.parameters()).device
         assert wav.ndim == 2, "wav must be a 2D tensor, with shape (1, T)"
         wav = torchaudio.functional.resample(wav, sr, 16000)
         wav = torch.nn.functional.pad(wav, ((400 - 320) // 2, (400 - 320) // 2))
         wav = wav.to(device)
-        features, _ = model.extract_features(wav, output_layer=11)
+        features, _ = model.extract_features(wav, output_layer=layer)
         features = features.squeeze(0)
         return features
 
