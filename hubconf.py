@@ -1,5 +1,7 @@
 dependencies = ["torch", "torchaudio"]
 
+from typing import Callable, Tuple
+
 import torch
 
 from wavlm.WavLM import WavLM
@@ -21,6 +23,25 @@ def wavlm_large(map_location="cpu", progress=True) -> WavLM:
         map_location=map_location,
         progress=progress,
     )
+
+
+def wavlm_for_dpslm(map_location="cpu", progress=True) -> Tuple[WavLM, Callable]:
+    model = WavLM.from_pretrained_url(
+        release_url + "wavlm-dpsl-6fb4b3c3.pt",
+        map_location=map_location,
+        progress=progress,
+    )
+    model.eval()
+
+    @torch.inference_mode()
+    def extract_features(model: torch.nn.Module, wav: torch.Tensor) -> torch.Tensor:
+        assert wav.ndim == 2, "wav must be a 2D tensor, with shape (1, T)"
+        wav = torch.nn.functional.pad(wav, ((400 - 320) // 2, (400 - 320) // 2))
+        features, _ = model.extract_features(wav, output_layer=11)
+        features = features.squeeze(0)
+        return features
+
+    return model, extract_features
 
 
 def codebook(layer: int, k: int, map_location="cpu", progress=True) -> torch.Tensor:
