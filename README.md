@@ -1,6 +1,6 @@
-# $k$-means codebooks for WavLM
+# K-means codebooks for WavLM
 
-A quick way to access the pretrained [WavLM Large](https://github.com/microsoft/unilm/tree/master/wavlm) model and the pretrained $k$-means codebooks as used in https://github.com/nicolvisser/dp-slm.
+A quick way to access the pretrained [WavLM Large](https://github.com/microsoft/unilm/tree/master/wavlm) model and the pretrained $K$-means codebooks as used in https://github.com/nicolvisser/dp-slm.
 
 ## Usage
 
@@ -52,7 +52,7 @@ units = torch.argmin(distances, dim=1) # [T,]
 
 ## Pretrained codebooks available
 
-| Layer | k    | Bit rate (bps) |
+| Layer | `k`    | Bit rate (bps) |
 | ----- | ---- | -------------- |
 | 11    | 100  | 192            |
 | 11    | 200  | 243            |
@@ -64,4 +64,5 @@ units = torch.argmin(distances, dim=1) # [T,]
 
 The training script for the $K$-means codebooks can be found in `kmeans/train.py`.
 You can find the dependencies for training in `pyproject.toml`.
+
 ```
