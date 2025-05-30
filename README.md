@@ -64,5 +64,3 @@ units = torch.argmin(distances, dim=1) # [T,]
 
 The training script for the $K$-means codebooks can be found in `kmeans/train.py`.
 You can find the dependencies for training in `pyproject.toml`.
-
-```
